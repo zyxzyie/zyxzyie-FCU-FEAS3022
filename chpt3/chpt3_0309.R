@@ -1,0 +1,42 @@
+#-----(0309)
+library(AppliedPredictiveModeling)
+data(segmentationOriginal)
+dim(segmentationOriginal)
+str(segmentationOriginal)
+write.csv(segmentationOriginal, "cell.csv")
+segData <- subset(segmentationOriginal, Case == "Train")
+cellID <- segData$Cell
+class <- segData$Class
+case <- segData$Case
+segData <- segData[, -(1:3)]
+dim(segData)
+statusColNum <- grep("Status", names(segData))
+segData <- segData[, -statusColNum]
+dim(segData)
+library(e1071)
+skewness(segData$AngleCh1)
+skewValues <- apply(segData, 2, skewness)
+head(skewValues)
+library(caret)
+AreaCh1 <- BoxCoxTrans(segData$AreaCh1)
+temp <- predict(AreaCh1, segData$AreaCh1)
+
+#----- (0316)
+nearZeroVar(segData)
+data(BloodBrain)
+write.csv(bbbDescr, "BloodBrain.csv")
+nearZeroVar(bbbDescr)
+nearZeroVar(bbbDescr, names = TRUE)
+table(bbbDescr$negative)
+library(corrplot)
+correlations <- cor(segData)
+corrplot(correlations, order="hclust")
+highCorr <- findCorrelation(correlations, cutoff = .75)
+length(highCorr)
+head(highCorr)
+filteredSegData <- segData[, -highCorr]
+correlations <- cor(filteredSegData)
+corrplot(correlations, order = "hclust")
+library(mlbench)
+data("Soybean")
+write.csv(Soybean, "Soybean.csv")
