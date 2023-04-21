@@ -1,0 +1,5 @@
+library(AppliedPredictiveModeling)
+data(hepatic)
+write.csv(bio, "bio.csv")
+write.csv(chem, "chem.csv")
+write.csv(injury, "injury.csv")
